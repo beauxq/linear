@@ -76,7 +76,7 @@ def main():
     while operation != "E":  # operations loop
         print(matrix)
         while operation not in ["R", "I", "S", "E"]:  # valid input loop
-            operation = input("R Replacement\nI Interchange\nS Scaling\nE End\nWhich operation? ")
+            operation = input("R Replacement\nI Interchange\nS Scaling\nE End\nWhich operation? ").upper()
         if operation == "R":
             # replacement
             which_row = 0
@@ -91,6 +91,8 @@ def main():
                     other_row = int(input("Which row to add? "))
                 except ValueError:
                     other_row = 0
+            # TODO suggested scalar = (0 - first_nonzero_entry_in_replaced_row) / first_nonzero_entry_in_added_row
+            # (if they're in the same column)
             scalar = 0
             while scalar == 0:  # valid input loop
                 try:
