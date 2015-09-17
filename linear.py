@@ -1,4 +1,4 @@
-__author__ = 'Doug'
+__author__ = 'Doug Hoskisson'
 
 from fractions import Fraction
 from copy import deepcopy
