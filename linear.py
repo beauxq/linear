@@ -1,6 +1,7 @@
-__author__ = 'Doug'
+__author__ = 'Doug Hoskisson'
 
 from fractions import Fraction
+from copy import deepcopy
 
 
 class Matrix:
@@ -67,10 +68,96 @@ def create_matrix():
 
 def main():
 
+    matrix_history = []
     matrix = create_matrix()
+    matrix_history.append(deepcopy(matrix))
 
-    print(matrix)
+    operation = "N"
+    while operation != "E":  # operations loop
+        print(matrix)
+        while operation not in ["R", "I", "S", "E"]:  # valid input loop
+            operation = input("R Replacement\nI Interchange\nS Scaling\nE End\nWhich operation? ").upper()
+        if operation == "R":
+            # replacement
+            which_row = 0
+            while which_row < 1 or which_row > len(matrix.row):  # valid input loop
+                try:
+                    which_row = int(input("Which row to replace? "))
+                except ValueError:
+                    which_row = 0
+            other_row = 0
+            while other_row < 1 or other_row > len(matrix.row):  # valid input loop
+                try:
+                    other_row = int(input("Which row to add? "))
+                except ValueError:
+                    other_row = 0
+            # TODO suggested scalar = (0 - first_nonzero_entry_in_replaced_row) / first_nonzero_entry_in_added_row
+            # (if they're in the same column)
+            scalar = 0
+            while scalar == 0:  # valid input loop
+                try:
+                    scalar = Fraction(input("With what scalar? "))
+                except ValueError:
+                    scalar = 0
 
+            for index in range(len(matrix.row[which_row - 1])):
+                matrix.row[which_row - 1][index] += matrix.row[other_row - 1][index] * scalar
+
+            dependent_str = ("/" + str(scalar.denominator)) if scalar.denominator != 1 else ""
+            matrix_history.append(operation + " (" + str(which_row) + ") + (" + str(other_row) + ") * " +
+                                  str(scalar.numerator) + dependent_str)
+
+        elif operation == "I":
+            # interchange
+            which_row = 0
+            while which_row < 1 or which_row > len(matrix.row):  # valid input loop
+                try:
+                    which_row = int(input("Which row? "))
+                except ValueError:
+                    which_row = 0
+            other_row = 0
+            while other_row < 1 or other_row > len(matrix.row):  # valid input loop
+                try:
+                    other_row = int(input("Which other row? "))
+                except ValueError:
+                    other_row = 0
+
+            temp_row = deepcopy(matrix.row[which_row - 1])
+            matrix.row[which_row - 1] = deepcopy(matrix.row[other_row - 1])
+            matrix.row[other_row - 1] = deepcopy(temp_row)
+
+            matrix_history.append(operation + " (" + str(which_row) + ") (" + str(other_row) + ")")
+
+        elif operation == "S":
+            # scaling
+            which_row = 0
+            while which_row < 1 or which_row > len(matrix.row):  # valid input loop
+                try:
+                    which_row = int(input("Which row? "))
+                except ValueError:
+                    which_row = 0
+            scalar = 0
+            while scalar == 0:  # valid input loop
+                try:
+                    scalar = Fraction(input("Scalar? "))
+                except ValueError:
+                    scalar = 0
+
+            for index in range(len(matrix.row[which_row - 1])):
+                matrix.row[which_row - 1][index] *= scalar
+
+            dependent_str = ("/" + str(scalar.denominator)) if scalar.denominator != 1 else ""
+            matrix_history.append(operation + " (" + str(which_row) + ") * " + str(scalar.numerator) + dependent_str)
+
+        # done with operation
+        if operation != "E":
+            matrix_history.append(deepcopy(matrix))
+            operation = "N"
+
+    # end operations
+    # print history
+    for entry in matrix_history:
+        print(entry)
 
 if __name__ == "__main__":
     main()
